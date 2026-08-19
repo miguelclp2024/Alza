@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Confirma tu perfil — Alza{% endblock %}
+{% block content %}
+<section class="max-w-2xl mx-auto px-6 py-16">
+  <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-3">Antes de continuar</p>
+  <h1 class="font-serif text-3xl text-white mb-6">¿Te entendimos bien, {{ nombre }}?</h1>
+
+  <div class="card mb-6">
+    <p class="text-slate-200 leading-relaxed mb-5">{{ resumen_texto }}</p>
+    <div class="grid sm:grid-cols-2 gap-3 text-sm">
+      <div class="border-t border-white/10 pt-3"><span class="text-slate-500">Perfil calculado</span><br><span class="text-gold font-semibold capitalize">{{ perfil.perfil_resultado }}</span></div>
+      <div class="border-t border-white/10 pt-3"><span class="text-slate-500">Capital a invertir</span><br><span class="text-white">S/ {{ "%.0f"|format(perfil.capacidad_inversion_soles) }}</span></div>
+      <div class="border-t border-white/10 pt-3"><span class="text-slate-500">Horizonte</span><br><span class="text-white capitalize">{{ perfil.horizonte }} plazo</span></div>
+      <div class="border-t border-white/10 pt-3"><span class="text-slate-500">Objetivo</span><br><span class="text-white capitalize">{{ perfil.objetivo }}</span></div>
+      <div class="border-t border-white/10 pt-3">
+        <span class="text-slate-500">Mercado preferido</span><br>
+        <span class="text-white">
+          {% if perfil.interes_geografico == 'peru' %}Perú (BVL)
+          {% elif perfil.interes_geografico == 'global' %}Internacional
+          {% else %}Ambos
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" action="/onboarding/confirmar" class="flex gap-4">
+    <button type="submit" name="respuesta" value="si" class="btn-primary flex-1">Sí, es correcto</button>
+    <button type="submit" name="respuesta" value="no" class="btn-secondary flex-1">No, quiero afinarlo</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Alza{% endblock %}
+{% block content %}
+<section class="max-w-6xl mx-auto px-6 py-12">
+
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+    <div>
+      <p class="text-slate-400 text-sm">Hola, {{ user.nombre.split(' ')[0] }}</p>
+      <h1 class="font-serif text-3xl text-white">Tu cartera</h1>
+    </div>
+    <div class="flex gap-3">
+      <span class="badge-perfil card !p-2 !px-4 text-xs uppercase tracking-wide text-gold">Perfil: {{ user.perfil.perfil_resultado }}</span>
+      <a href="/invertir" class="btn-primary">Invertir</a>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-4 gap-5 mb-10">
+    <div class="card">
+      <p class="label">Valor total</p>
+      <p class="font-serif text-2xl text-white">S/ {{ "%.2f"|format(resumen.valor_total) }}</p>
+    </div>
+    <div class="card">
+      <p class="label">Saldo disponible</p>
+      <p class="font-serif text-2xl text-white">S/ {{ "%.2f"|format(resumen.saldo_disponible) }}</p>
+    </div>
+    <div class="card">
+      <p class="label">Invertido en mercado</p>
+      <p class="font-serif text-2xl text-white">S/ {{ "%.2f"|format(resumen.valor_posiciones) }}</p>
+    </div>
+    <div class="card">
+      <p class="label">Ganancia no realizada</p>
+      <p class="font-serif text-2xl {% if resumen.ganancia_total_soles >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">
+        {{ "%.2f"|format(resumen.ganancia_total_soles) }} ({{ resumen.ganancia_total_pct }}%)
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-10">
+    <p class="label mb-1">Cómo van tus posiciones desde que las compraste</p>
+    <p class="text-slate-500 text-xs mb-4">Precio real de hoy comparado con el precio real del día en que se hizo la simulación de compra.</p>
+    {% if resumen.posiciones %}
+    <div class="overflow-x-auto -mx-2">
+      <table class="w-full text-sm min-w-[560px]">
+        <thead>
+          <tr class="text-slate-500 text-left border-b border-white/10">
+            <th class="py-2 px-2 font-medium">Activo</th>
+            <th class="py-2 px-2 font-medium">Comprado el</th>
+            <th class="py-2 px-2 font-medium text-right">Precio compra</th>
+            <th class="py-2 px-2 font-medium text-right">Precio hoy</th>
+            <th class="py-2 px-2 font-medium text-right">Variación</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in resumen.posiciones %}
+          {% set dias = (hoy - p.abierta_en).days %}
+          <tr class="border-b border-white/5 last:border-0">
+            <td class="py-2 px-2 text-white">{{ p.ticker }}</td>
+            <td class="py-2 px-2 text-slate-400">{{ p.abierta_en.strftime('%d %b %Y') }} <span class="text-slate-600">({{ dias }} día{{ 's' if dias != 1 else '' }})</span></td>
+            <td class="py-2 px-2 text-right text-slate-300">S/ {{ "%.2f"|format(p.precio_promedio_compra) }}</td>
+            <td class="py-2 px-2 text-right text-slate-300">S/ {{ "%.2f"|format(p.precio_actual) }}</td>
+            <td class="py-2 px-2 text-right font-medium {% if p.ganancia_pct >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">
+              {{ "+" if p.ganancia_pct >= 0 else "" }}{{ p.ganancia_pct }}%
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm">Aún no tienes posiciones. <a href="/invertir" class="text-gold hover:underline">Empieza a invertir</a>.</p>
+    {% endif %}
+
+    {% if grafico_valores|length > 1 %}
+    <div class="border-t border-white/10 mt-6 pt-5">
+      <p class="label mb-3">Valor total día a día</p>
+      <canvas id="graficoCartera" height="80"></canvas>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-8">
+    <div class="card">
+      <p class="label mb-4">Posiciones abiertas</p>
+      {% if resumen.posiciones %}
+      <div class="space-y-3">
+        {% for p in resumen.posiciones %}
+        <div class="flex justify-between items-center border-b border-white/5 pb-3 last:border-0 last:pb-0">
+          <div>
+            <p class="text-white text-sm font-medium">{{ p.ticker }}</p>
+            <p class="text-slate-500 text-xs">{{ p.nombre }} &middot; {{ "%.4f"|format(p.cantidad) }} u.</p>
+          </div>
+          <div class="text-right">
+            <p class="text-white text-sm">S/ {{ "%.2f"|format(p.valor_actual) }}</p>
+            <p class="text-xs {% if p.ganancia_soles >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">{{ p.ganancia_pct }}%</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-slate-500 text-sm">Aún no tienes posiciones. <a href="/invertir" class="text-gold hover:underline">Empieza a invertir</a>.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <p class="label mb-4">Últimas operaciones</p>
+      {% if historial %}
+      <div class="space-y-3">
+        {% for tx in historial %}
+        <div class="flex justify-between items-center border-b border-white/5 pb-3 last:border-0 last:pb-0 text-sm">
+          <div>
+            <p class="text-white capitalize">{{ tx.tipo }} {{ tx.ticker if tx.tipo != 'deposito' else '' }}</p>
+            <p class="text-slate-500 text-xs">{{ tx.fecha.strftime('%d %b %Y, %H:%M') }}</p>
+          </div>
+          <p class="text-slate-300">S/ {{ "%.2f"|format(tx.monto_total) }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-slate-500 text-sm">Todavía no registras operaciones.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if resumen.posiciones %}
+  <div id="proyeccion" class="card mt-8">
+    <p class="label mb-1">Proyección de tu cartera</p>
+    <p class="text-slate-500 text-xs mb-4">Basada en retorno histórico, volatilidad y tendencia real de tus activos. Se actualiza cada hora.</p>
+    <div class="flex flex-wrap gap-3 mb-6">
+      {% for h in horizontes_disponibles %}
+      <a href="/dashboard?horizonte={{ h.codigo }}#proyeccion" class="{% if horizonte_activo == h.codigo %}btn-primary{% else %}btn-secondary{% endif %}">{{ h.label }}</a>
+      {% endfor %}
+    </div>
+
+    {% if proyeccion %}
+    <div class="border-t border-white/10 pt-5">
+      <div class="grid sm:grid-cols-3 gap-4 mb-5">
+        <div>
+          <p class="label">Hoy</p>
+          <p class="font-serif text-xl text-white">S/ {{ "%.2f"|format(proyeccion.valor_actual) }}</p>
+        </div>
+        <div>
+          <p class="label">Proyectado a {{ proyeccion.horizonte_label }}</p>
+          <p class="font-serif text-xl {% if proyeccion.ganancia_esperada_soles >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">
+            S/ {{ "%.2f"|format(proyeccion.valor_esperado) }}
+          </p>
+          <p class="text-xs {% if proyeccion.ganancia_esperada_soles >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">
+            {{ "+" if proyeccion.ganancia_esperada_soles >= 0 else "" }}{{ "%.2f"|format(proyeccion.ganancia_esperada_soles) }} ({{ proyeccion.ganancia_esperada_pct }}%)
+          </p>
+        </div>
+        <div>
+          <p class="label">Rango (conservador — optimista)</p>
+          <p class="text-sm text-slate-300">S/ {{ "%.0f"|format(proyeccion.valor_conservador) }} — S/ {{ "%.0f"|format(proyeccion.valor_optimista) }}</p>
+        </div>
+      </div>
+
+      <p class="text-slate-200 text-sm leading-relaxed mb-6">{{ explicacion_proyeccion }}</p>
+
+      <p class="label mb-3">Detalle por activo, con datos reales del mercado</p>
+      <div class="space-y-4 mb-2">
+        {% for d in proyeccion.detalle %}
+        <div class="border border-white/10 rounded-lg p-4">
+          <div class="flex flex-wrap justify-between items-baseline gap-2 mb-2">
+            <span class="text-white font-medium">{{ d.ticker }} <span class="text-slate-500 font-normal text-xs">&middot; {{ d.sector }} &middot; {{ d.peso_pct }}% de tu cartera</span></span>
+            <span class="text-sm">
+              <span class="text-slate-500">S/ {{ "%.0f"|format(d.valor_hoy) }} hoy &rarr;</span>
+              <span class="font-semibold {% if d.valor_proyectado >= d.valor_hoy %}badge-positivo{% else %}badge-negativo{% endif %}"> S/ {{ "%.0f"|format(d.valor_proyectado) }} proyectado</span>
+            </span>
+          </div>
+          <div class="grid sm:grid-cols-4 gap-3 text-xs text-slate-400 mb-3">
+            <div><span class="text-slate-600 block">Retorno 1 año</span><span class="{% if (d.retorno_1y_pct or 0) >= 0 %}badge-positivo{% else %}badge-negativo{% endif %}">{{ d.retorno_1y_pct if d.retorno_1y_pct is not none else '—' }}%</span></div>
+            <div><span class="text-slate-600 block">Promedio 3 años</span>{{ d.retorno_3y_anualizado_pct if d.retorno_3y_anualizado_pct is not none else '—' }}%/año</div>
+            <div><span class="text-slate-600 block">Volatilidad</span>{{ d.volatilidad_label }} ({{ d.volatilidad_pct }}%)</div>
+            <div><span class="text-slate-600 block">Tendencia</span><span class="capitalize {% if d.tendencia == 'alcista' %}badge-positivo{% elif d.tendencia == 'bajista' %}badge-negativo{% endif %}">{{ d.tendencia }}</span></div>
+          </div>
+          <p class="text-slate-400 text-xs leading-relaxed">{{ d.razon }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <p class="text-xs text-slate-500 leading-relaxed border-t border-white/10 mt-5 pt-4">
+      Esto es una proyección simulada basada en datos e indicadores reales de mercado (retorno histórico, volatilidad,
+      tendencia de precio y caídas pasadas), no una promesa de resultado. Somos una IA mostrando escenarios
+      estadísticos: en la vida real cualquier cosa puede pasar y el desempeño pasado no garantiza resultados futuros.
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="card mt-8">
+    <div class="flex justify-between items-center mb-4">
+      <p class="label mb-0">Metas financieras</p>
+      <a href="/metas" class="text-gold text-sm hover:underline">Gestionar metas &rarr;</a>
+    </div>
+    {% if metas %}
+    <div class="grid md:grid-cols-3 gap-4">
+      {% for m in metas %}
+      {% set progreso = (resumen.valor_total / m.monto_objetivo * 100) if m.monto_objetivo else 0 %}
+      <div>
+        <p class="text-white text-sm mb-1">{{ m.nombre }}</p>
+        <div class="w-full bg-white/10 rounded-full h-2 mb-1">
+          <div class="bg-gold h-2 rounded-full" style="width: {{ [progreso, 100]|min }}%"></div>
+        </div>
+        <p class="text-xs text-slate-500">S/ {{ "%.0f"|format(resumen.valor_total) }} de S/ {{ "%.0f"|format(m.monto_objetivo) }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm">Aún no defines metas. <a href="/metas" class="text-gold hover:underline">Crea la primera</a>.</p>
+    {% endif %}
+  </div>
+
+</section>
+
+{% if grafico_valores|length > 1 %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  const ctx = document.getElementById('graficoCartera');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ grafico_fechas|tojson }},
+      datasets: [{
+        label: 'Valor de cartera (S/)',
+        data: {{ grafico_valores|tojson }},
+        borderColor: '#ede7d8',
+        backgroundColor: 'rgba(237,231,216,0.12)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 2,
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      }
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

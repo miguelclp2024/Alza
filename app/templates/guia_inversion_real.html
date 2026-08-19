@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Cómo invertir de verdad — Alza{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-6 py-16">
+  <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-3">De la simulación al mundo real</p>
+  <h1 class="font-serif text-3xl text-white mb-2">Cómo hacer esta inversión con dinero real</h1>
+  <p class="text-slate-400 text-sm mb-2">Una guía simple para pasar de la simulación a una cuenta de inversión real, paso a paso.</p>
+  <p class="text-slate-500 text-xs mb-8">
+    Como elegiste
+    {% if mercado == 'peru' %}el mercado peruano
+    {% elif mercado == 'global' %}el mercado internacional
+    {% else %}ambos mercados
+    {% endif %}
+    , esta guía está enfocada en eso.
+  </p>
+
+  {% if posiciones %}
+  <div class="card mb-8">
+    <p class="label mb-3">Lo que simulaste (para buscar exactamente esto en tu bróker)</p>
+    <div class="flex flex-wrap gap-3">
+      {% for p in posiciones %}
+      <span class="input !w-auto px-3 py-2 text-sm text-white">{{ p.ticker }} <span class="text-slate-500">&middot; S/ {{ "%.0f"|format(p.valor_actual) }}</span></span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="space-y-5 mb-10">
+
+    <div class="card">
+      <p class="text-gold text-xs font-semibold mb-1">Paso 1</p>
+      <h3 class="font-serif text-lg text-white mb-2">Elige dónde vas a invertir</h3>
+
+      {% if mercado == 'peru' %}
+      <p class="text-slate-300 text-sm leading-relaxed mb-3">Tu perfil está enfocado en el mercado peruano, así que la vía natural es una <strong class="text-slate-200">Sociedad Agente de Bolsa (SAB)</strong> registrada ante la SMV, que te da acceso directo a la Bolsa de Valores de Lima.</p>
+      <ul class="text-slate-400 text-sm leading-relaxed list-disc pl-5 space-y-2">
+        <li>Opera en soles, sin necesidad de cambiar moneda.</li>
+        <li>Ahí puedes comprar directamente acciones peruanas como las que te mostramos (ej. BAP, SCCO, BVN).</li>
+        <li>Está regulada localmente por la SMV — puedes verificar que una SAB esté autorizada en su registro público.</li>
+      </ul>
+      {% elif mercado == 'global' %}
+      <p class="text-slate-300 text-sm leading-relaxed mb-3">Tu perfil está enfocado en el mercado internacional, así que necesitas un <strong class="text-slate-200">bróker con acceso al mercado americano (NYSE/NASDAQ)</strong>, operable desde Perú.</p>
+      <ul class="text-slate-400 text-sm leading-relaxed list-disc pl-5 space-y-2">
+        <li>Una SAB local normalmente NO da acceso a acciones de EE.UU. — para eso necesitas específicamente un bróker internacional.</li>
+        <li>Ahí puedes comprar directamente los ETFs y acciones de EE.UU. que te mostramos (ej. SPY, AAPL, JNJ).</li>
+        <li>Compara comisiones, monto mínimo, si tienen soporte en español y cómo manejan el cambio de soles a dólares antes de elegir uno.</li>
+      </ul>
+      {% else %}
+      <p class="text-slate-300 text-sm leading-relaxed mb-3">Como te interesan ambos mercados, probablemente necesites combinar dos vías distintas — no todos los brókers dan acceso a los dos mundos a la vez:</p>
+      <ul class="text-slate-400 text-sm leading-relaxed list-disc pl-5 space-y-2">
+        <li><strong class="text-slate-200">Para acciones de EE.UU.</strong> (ej. SPY, AAPL, JNJ): necesitas un bróker con acceso al mercado americano, operable desde Perú.</li>
+        <li><strong class="text-slate-200">Para acciones peruanas</strong> (ej. BAP, SCCO, BVN): usa una Sociedad Agente de Bolsa (SAB) registrada ante la SMV.</li>
+        <li>Compara comisiones, monto mínimo y soporte en español antes de elegir cada uno.</li>
+      </ul>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <p class="text-gold text-xs font-semibold mb-1">Paso 2</p>
+      <h3 class="font-serif text-lg text-white mb-2">Verifica tu identidad (KYC)</h3>
+      <p class="text-slate-300 text-sm leading-relaxed">Todo bróker regulado te pedirá DNI, comprobante de domicilio y algunos datos de ingresos/ocupación. Es un proceso normal de cumplimiento, no una señal de alerta.</p>
+    </div>
+
+    <div class="card">
+      <p class="text-gold text-xs font-semibold mb-1">Paso 3</p>
+      <h3 class="font-serif text-lg text-white mb-2">Transfiere fondos</h3>
+      {% if mercado == 'peru' %}
+      <p class="text-slate-300 text-sm leading-relaxed">Normalmente por transferencia bancaria directa en soles hacia tu cuenta en la SAB — al operar en el mercado local no necesitas cambiar de moneda.</p>
+      {% else %}
+      <p class="text-slate-300 text-sm leading-relaxed">Normalmente por transferencia bancaria. Como el bróker opera en dólares, probablemente necesites cambiar soles a dólares primero — revisa el tipo de cambio y las comisiones tanto de tu banco/casa de cambio como del bróker antes de mover el dinero.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <p class="text-gold text-xs font-semibold mb-1">Paso 4</p>
+      <h3 class="font-serif text-lg text-white mb-2">Busca el ticker exacto y compra</h3>
+      <p class="text-slate-300 text-sm leading-relaxed">Usa el mismo símbolo que te mostramos en la simulación (por ejemplo "AAPL" para Apple) y el monto aproximado que definimos en tu alternativa. La mayoría de brókers permite comprar fracciones de acciones si el monto es menor al precio de una acción completa.</p>
+    </div>
+
+    <div class="card">
+      <p class="text-gold text-xs font-semibold mb-1">Paso 5</p>
+      <h3 class="font-serif text-lg text-white mb-2">Haz seguimiento con calma</h3>
+      <p class="text-slate-300 text-sm leading-relaxed">Revisa tu cartera cada cierto tiempo (mensual, por ejemplo), no cada día. Las inversiones de mediano/largo plazo no necesitan reacciones diarias — el ruido de corto plazo suele importar menos que la tendencia de fondo.</p>
+    </div>
+
+  </div>
+
+  <div class="card mb-8">
+    <p class="label mb-3">Antes de invertir dinero real, considera</p>
+    <ul class="text-slate-400 text-sm leading-relaxed list-disc pl-5 space-y-2">
+      <li>Las comisiones del bróker y del cambio de moneda pueden afectar tu retorno real — compáralas antes de elegir.</li>
+      <li>Las ganancias de inversión pueden estar sujetas a impuestos según tu situación; infórmate o consulta a un contador.</li>
+      <li>Si tienes deudas de interés alto (tarjetas, préstamos personales), casi siempre conviene pagarlas antes de invertir el excedente.</li>
+      <li>Nunca inviertas dinero que podrías necesitar de forma inmediata o urgente.</li>
+    </ul>
+  </div>
+
+  <p class="text-xs text-slate-500 leading-relaxed border-t border-white/10 pt-4 mb-8">
+    Esta guía es orientación educativa general, no una recomendación de un bróker específico ni asesoría financiera
+    regulada. Verifica comisiones, impuestos y regulación vigente, y considera consultar a un asesor financiero
+    certificado antes de invertir dinero real.
+  </p>
+
+  <a href="/dashboard" class="btn-secondary">Volver a mi cartera</a>
+</section>
+{% endblock %}

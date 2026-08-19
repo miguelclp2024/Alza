@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Alza — Bienvenido{% endblock %}
+{% block content %}
+<section
+  class="min-h-[calc(100vh-73px)] flex items-center"
+  style="background: linear-gradient(rgba(12,19,25,0.72), rgba(12,19,25,0.92)), url('/static/img/fondo_bienvenida.png') center/cover no-repeat, #0c1319;"
+>
+  <div class="max-w-3xl mx-auto px-6 py-20 text-center">
+    <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">Orientación financiera en 2 minutos</p>
+    <h1 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">Bienvenido a Alza</h1>
+    <p class="text-slate-200 text-lg leading-relaxed mb-4 max-w-2xl mx-auto">
+      Alza te ayuda a entender qué hacer con tus ahorros. Respondes un cuestionario corto sobre tu situación
+      y tus metas, y te mostramos alternativas concretas de inversión en acciones y ETFs reales — con datos
+      de mercado en vivo, explicadas en lenguaje simple — para que decidas con criterio, no a ciegas.
+    </p>
+    <p class="text-slate-400 text-sm mb-10 max-w-xl mx-auto">
+      Sin registro ni contraseñas. Todo el dinero y las operaciones son simulados, pensado para que aprendas
+      a moverte en el mundo financiero antes de invertir de verdad.
+    </p>
+    <a href="/comenzar" class="btn-primary text-base px-8 py-3">Comenzar</a>
+  </div>
+</section>
+{% endblock %}

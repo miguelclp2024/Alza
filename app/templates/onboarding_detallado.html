@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Cuéntanos más — Alza{% endblock %}
+{% block content %}
+<section class="max-w-2xl mx-auto px-6 py-16">
+  <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-3">Afinemos tu perfil</p>
+  <h1 class="font-serif text-3xl text-white mb-2">Cuéntanos un poco más, {{ nombre }}</h1>
+  <p class="text-slate-400 text-sm mb-8">Estas preguntas nos ayudan a entender mejor qué buscas exactamente.</p>
+
+  <form method="post" action="/onboarding/detallado" class="card space-y-7">
+
+    <div>
+      <label class="label">¿Qué te gustaría lograr específicamente?</label>
+      <select class="input" name="objetivo_especifico" required>
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="vivienda">Comprar una vivienda</option>
+        <option value="jubilacion">Asegurar mi jubilación</option>
+        <option value="ingresos_pasivos">Generar ingresos pasivos</option>
+        <option value="patrimonio">Hacer crecer mi patrimonio</option>
+        <option value="emergencia">Armar un fondo de emergencia</option>
+        <option value="educacion">Pagar educación (propia o de mi familia)</option>
+        <option value="no_claro">Aún no lo tengo claro</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="label" for="ahorro_mensual_adicional">Además de tu capital inicial, ¿cuánto podrías ahorrar e invertir cada mes? (S/)</label>
+      <input class="input" type="number" min="0" step="1" id="ahorro_mensual_adicional" name="ahorro_mensual_adicional" placeholder="Ej. 300 (o 0 si no puedes ahorrar mensualmente)" required>
+    </div>
+
+    <div>
+      <label class="label">¿Tienes deudas activas actualmente? (tarjetas, préstamos, etc.)</label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="tiene_deudas" value="si" required> <span>Sí</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="tiene_deudas" value="no"> <span>No</span></label>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">Como referencia: casi siempre conviene pagar deudas de interés alto antes de invertir el excedente.</p>
+    </div>
+
+    <div>
+      <label class="label">Escenario extremo: si tu inversión cayera 40% en un año, ¿qué harías?</label>
+      <div class="space-y-2">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="escenario_extremo" value="conservador" required> <span>Retiro todo lo que quede, no tolero más pérdidas</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="escenario_extremo" value="moderado"> <span>Me preocupa, pero espero a que se recupere</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="escenario_extremo" value="agresivo"> <span>Lo veo como oportunidad para invertir más</span></label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary w-full">Ver mi perfil afinado</button>
+  </form>
+</section>
+{% endblock %}

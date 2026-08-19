@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Metas — Alza{% endblock %}
+{% block content %}
+<section class="max-w-4xl mx-auto px-6 py-12">
+  <h1 class="font-serif text-3xl text-white mb-8">Tus metas financieras</h1>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <div>
+      {% if metas %}
+      <div class="space-y-4">
+        {% for m in metas %}
+        {% set progreso = (resumen.valor_total / m.monto_objetivo * 100) if m.monto_objetivo else 0 %}
+        <div class="card">
+          <div class="flex justify-between items-center mb-2">
+            <p class="text-white font-medium">{{ m.nombre }}</p>
+            <p class="text-slate-400 text-xs">Meta: {{ m.fecha_objetivo.strftime('%b %Y') }}</p>
+          </div>
+          <div class="w-full bg-white/10 rounded-full h-2 mb-2">
+            <div class="bg-gold h-2 rounded-full" style="width: {{ [progreso, 100]|min }}%"></div>
+          </div>
+          <p class="text-xs text-slate-500">S/ {{ "%.0f"|format(resumen.valor_total) }} de S/ {{ "%.0f"|format(m.monto_objetivo) }} ({{ "%.1f"|format(progreso) }}%)</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-slate-500 text-sm">Aun no tienes metas registradas.</p>
+      {% endif %}
+    </div>
+
+    <div class="card h-fit">
+      <p class="label mb-4">Crear nueva meta</p>
+      <form method="post" action="/metas" class="space-y-4">
+        <div>
+          <label class="label" for="nombre">Nombre de la meta</label>
+          <input class="input" type="text" id="nombre" name="nombre" placeholder="Ej. Fondo de emergencia" required>
+        </div>
+        <div>
+          <label class="label" for="monto_objetivo">Monto objetivo (S/)</label>
+          <input class="input" type="number" id="monto_objetivo" name="monto_objetivo" min="1" step="1" required>
+        </div>
+        <div>
+          <label class="label" for="fecha_objetivo">Fecha objetivo</label>
+          <input class="input" type="date" id="fecha_objetivo" name="fecha_objetivo" required>
+        </div>
+        <button type="submit" class="btn-primary w-full">Crear meta</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

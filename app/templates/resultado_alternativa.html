@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Tu alternativa {{ alternativa.nombre }} — Alza{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-6 py-16">
+  <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-3">Alternativa aplicada</p>
+  <h1 class="font-serif text-3xl text-white mb-2">Cartera {{ alternativa.nombre }}</h1>
+  <p class="text-slate-400 text-sm mb-8">Esto es en lo que consiste, y en qué invertimos exactamente tus S/ {{ "%.0f"|format(alternativa.monto_total) }}.</p>
+
+  <div class="card mb-6">
+    <p class="text-slate-200 leading-relaxed">{{ alternativa.razon_general }}</p>
+  </div>
+
+  <div class="space-y-4 mb-8">
+    {% for t in alternativa.tickers %}
+    <div class="card">
+      <div class="flex justify-between items-baseline mb-2">
+        <span class="text-white font-medium">{{ t.ticker }} <span class="text-slate-500 font-normal text-sm">&middot; {{ t.nombre }}</span></span>
+        <span class="text-gold font-semibold">S/ {{ "%.0f"|format(t.monto_soles) }} <span class="text-slate-500 font-normal text-sm">({{ t.peso_pct }}%)</span></span>
+      </div>
+      <p class="text-slate-400 text-sm leading-relaxed">{{ t.razon }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="flex flex-wrap gap-4">
+    <a href="/dashboard" class="btn-primary">Ver mi cartera</a>
+    <a href="/invertir/guia" class="btn-secondary whitespace-nowrap">¿Cómo hago esta inversión con dinero real?</a>
+    <form method="post" action="/invertir/deshacer">
+      <button type="submit" class="btn-secondary whitespace-nowrap">¿Quieres realizar otra proyección de inversión?</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,139 @@
+@font-face {
+  font-family: 'Alfa Slab One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/fonts/AlfaSlabOne-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/static/fonts/Inter-Variable.woff2') format('woff2');
+}
+
+/* Textura halftone sutil de fondo, como impresion de comic vieja. */
+body {
+  background-color: #0c1319;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 2px solid rgba(10, 10, 10, 0.85);
+  border-radius: 0.9rem;
+  padding: 1.5rem;
+  box-shadow: 4px 4px 0 rgba(10, 10, 10, 0.85);
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(10, 10, 10, 0.7);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.85rem;
+  color: #f1f5f9;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+label.input {
+  display: flex;
+  align-items: center;
+}
+
+.input input[type="radio"],
+.input input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #d9901e;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #d9901e;
+}
+
+/* El popup nativo de <select> ignora el fondo translucido del .input y
+   puede quedar con texto claro sobre fondo claro; se fuerza contraste. */
+select.input option {
+  color: #182530;
+  background: #ffffff;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ede7d8;
+  color: #0c1319;
+  font-weight: 700;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid rgba(10, 10, 10, 0.85);
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 0 rgba(10, 10, 10, 0.85);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #faf8f1;
+}
+
+.btn-primary:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(10, 10, 10, 0.85);
+}
+
+.btn-secondary {
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  color: #f1f5f9;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border: 2px solid rgba(10, 10, 10, 0.7);
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 0 rgba(10, 10, 10, 0.55);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #d9901e;
+}
+
+.btn-secondary:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(10, 10, 10, 0.55);
+}
+
+.badge-positivo {
+  color: #4ade80;
+}
+
+.badge-negativo {
+  color: #f87171;
+}
+
+.card.card-recomendada {
+  border-color: #d9901e;
+  box-shadow: 4px 4px 0 rgba(217, 144, 30, 0.6);
+}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Alza — Tu perfil de inversión{% endblock %}
+{% block content %}
+<section class="max-w-2xl mx-auto px-6 py-16">
+  <p class="text-gold uppercase tracking-[0.2em] text-xs font-semibold mb-3">Orientación financiera en 2 minutos</p>
+  <h1 class="font-serif text-3xl text-white mb-2">Descubre en qué te conviene invertir</h1>
+  <p class="text-slate-400 text-sm mb-8">Responde estas preguntas y te mostramos, con datos reales de mercado, alternativas concretas para tu dinero. Sin registro, sin contraseñas.</p>
+
+  <form method="post" action="/onboarding" class="card space-y-7">
+
+    <div>
+      <label class="label" for="nombre">¿Cómo te llamas?</label>
+      <input class="input" type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+    </div>
+
+    <div>
+      <label class="label">¿En qué plazo esperas usar este dinero?</label>
+      <div class="grid grid-cols-3 gap-3">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="horizonte" value="corto" required> <span>Corto (&lt; 2 años)</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="horizonte" value="medio"> <span>Medio (2-7 años)</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="horizonte" value="largo"> <span>Largo (&gt; 7 años)</span></label>
+      </div>
+    </div>
+
+    <div>
+      <label class="label" for="capacidad_inversion_soles">¿Cuánto podrías destinar a invertir hoy? (S/)</label>
+      <input class="input" type="number" min="0" step="1" id="capacidad_inversion_soles" name="capacidad_inversion_soles" placeholder="Ej. 5000" required>
+    </div>
+
+    <div>
+      <label class="label">Si tu cartera cae 15% en un mes, ¿qué harías?</label>
+      <div class="space-y-2">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="tolerancia_riesgo" value="conservador" required> <span>Vendo para evitar más pérdidas</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="tolerancia_riesgo" value="moderado"> <span>Espero, sin hacer nada</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="tolerancia_riesgo" value="agresivo"> <span>Invierto más, aprovechando el precio bajo</span></label>
+      </div>
+    </div>
+
+    <div>
+      <label class="label">¿En qué mercado prefieres invertir?</label>
+      <div class="space-y-2">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="interes_geografico" value="peru" required> <span>Mercado peruano (Bolsa de Valores de Lima)</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="interes_geografico" value="global"> <span>Mercado internacional (EE.UU. y otros)</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="interes_geografico" value="ambos"> <span>Ambos, prioriza lo que rinda mejor</span></label>
+      </div>
+    </div>
+
+    <div>
+      <label class="label">¿Cuál es tu objetivo principal?</label>
+      <select class="input" name="objetivo" required>
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="preservacion">Preservar el capital que ya tengo</option>
+        <option value="ingresos">Generar ingresos recurrentes (dividendos)</option>
+        <option value="crecimiento">Hacer crecer mi capital a largo plazo</option>
+        <option value="jubilacion">Ahorrar para la jubilación</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-5">
+      <div>
+        <label class="label">Rango de edad</label>
+        <select class="input" name="rango_edad" required>
+          <option value="" disabled selected>Selecciona</option>
+          <option value="<25">Menos de 25</option>
+          <option value="25-40">25 a 40</option>
+          <option value="40-55">40 a 55</option>
+          <option value="55+">Más de 55</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">Experiencia invirtiendo</label>
+        <select class="input" name="experiencia" required>
+          <option value="" disabled selected>Selecciona</option>
+          <option value="ninguna">Ninguna</option>
+          <option value="basica">Básica</option>
+          <option value="intermedia">Intermedia</option>
+          <option value="avanzada">Avanzada</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="label">¿Podrías necesitar retirar este dinero en cualquier momento?</label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="necesita_liquidez" value="si" required> <span>Sí, podría necesitarlo pronto</span></label>
+        <label class="input flex items-center gap-2 cursor-pointer"><input type="radio" name="necesita_liquidez" value="no"> <span>No, puedo dejarlo invertido</span></label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary w-full">Ver mi perfil</button>
+  </form>
+</section>
+{% endblock %}

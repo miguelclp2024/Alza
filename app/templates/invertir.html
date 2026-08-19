@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Invertir — Alza{% endblock %}
+{% block content %}
+<section class="max-w-6xl mx-auto px-6 py-12">
+
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+    <div>
+      <p class="text-slate-400 text-sm">
+        Perfil {{ perfil.perfil_resultado }} &middot; mercado
+        {% if perfil.interes_geografico == 'peru' %}peruano{% elif perfil.interes_geografico == 'global' %}internacional{% else %}peruano + internacional{% endif %}
+      </p>
+      <h1 class="font-serif text-3xl text-white">Alternativas para tu dinero</h1>
+    </div>
+    <p class="text-slate-300 text-sm">Saldo disponible: <span class="text-gold font-semibold">S/ {{ "%.2f"|format(resumen.saldo_disponible) }}</span></p>
+  </div>
+
+  {% if mensaje %}
+  <div class="mb-6 text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-md px-4 py-3">{{ mensaje }}</div>
+  {% endif %}
+  {% if error %}
+  <div class="mb-6 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-4 py-3">{{ error }}</div>
+  {% endif %}
+
+  {% if resumen.saldo_disponible <= 0 %}
+  <div class="card mb-8">
+    <p class="text-slate-300 text-sm">No tienes saldo disponible para repartir todavía. Deposita para ver alternativas concretas de inversión.</p>
+  </div>
+  {% elif not alternativas %}
+  <div class="card mb-8">
+    <p class="text-slate-300 text-sm">No encontramos suficientes activos para armar alternativas en este momento. Intenta de nuevo en unos minutos.</p>
+  </div>
+  {% else %}
+  <p class="label mb-4">Tres formas de repartir tus S/ {{ "%.0f"|format(resumen.saldo_disponible) }} sobre los mismos activos, según tu perfil</p>
+  <div class="grid lg:grid-cols-3 gap-6 mb-12">
+    {% for alt in alternativas %}
+    <div class="card flex flex-col {% if alt.recomendada %}card-recomendada{% endif %}">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-serif text-xl text-white">{{ alt.nombre }}</h3>
+        {% if alt.recomendada %}
+        <span class="text-[0.65rem] uppercase tracking-wide bg-gold text-navy-dark px-2 py-1 rounded-full font-semibold">Recomendada</span>
+        {% endif %}
+      </div>
+      <p class="text-slate-400 text-xs leading-relaxed mb-4">{{ alt.razon_general }}</p>
+
+      <div class="space-y-3 mb-5 flex-1">
+        {% for t in alt.tickers %}
+        <div class="border-t border-white/10 pt-3">
+          <div class="flex justify-between items-baseline mb-1">
+            <span class="text-white text-sm font-medium">{{ t.ticker }}</span>
+            <span class="text-gold text-sm font-semibold">S/ {{ "%.0f"|format(t.monto_soles) }} <span class="text-slate-500 font-normal">({{ t.peso_pct }}%)</span></span>
+          </div>
+          <p class="text-slate-500 text-xs">{{ t.razon }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <form method="post" action="/invertir/aplicar-alternativa">
+        <input type="hidden" name="alternativa" value="{{ alt.nombre }}">
+        <button type="submit" class="{% if alt.recomendada %}btn-primary{% else %}btn-secondary{% endif %} w-full">Invertir en esta alternativa</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="max-w-md card mb-12">
+    <p class="label mb-4">Depositar saldo (simulado)</p>
+    <form method="post" action="/invertir/depositar" class="flex gap-3">
+      <input class="input flex-1" type="number" min="1" step="1" name="monto" placeholder="Monto en S/" required>
+      <button type="submit" class="btn-secondary whitespace-nowrap">Depositar</button>
+    </form>
+    <p class="text-xs text-slate-500 mt-3">Este es un depósito de fondos ficticios para practicar. No se procesa ningún pago real.</p>
+  </div>
+
+  {% if resumen.posiciones %}
+  <div class="card">
+    <p class="label mb-4">Vender de tus posiciones</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for p in resumen.posiciones %}
+      <div class="border border-white/10 rounded-lg p-4">
+        <p class="text-white text-sm font-medium">{{ p.ticker }}</p>
+        <p class="text-slate-500 text-xs mb-3">Tienes {{ "%.4f"|format(p.cantidad) }} u. &middot; S/ {{ "%.2f"|format(p.valor_actual) }}</p>
+        <form method="post" action="/invertir/vender" class="flex gap-2">
+          <input type="hidden" name="ticker" value="{{ p.ticker }}">
+          <input class="input" type="number" min="0.0001" step="0.0001" max="{{ p.cantidad }}" name="cantidad" placeholder="Cantidad" required>
+          <button type="submit" class="btn-secondary whitespace-nowrap">Vender</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+{% endblock %}
