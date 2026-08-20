@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -48,10 +49,10 @@ class RiskProfile(Base):
     actualizado_en: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Cuestionario detallado (opcional, solo si el usuario dice que el resumen no es correcto)
-    objetivo_especifico: Mapped[str | None] = mapped_column(String(40), nullable=True)
-    ahorro_mensual_adicional: Mapped[float | None] = mapped_column(Float, nullable=True)
-    interes_geografico: Mapped[str | None] = mapped_column(String(20), nullable=True)  # peru, global, ambos
-    tiene_deudas: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    objetivo_especifico: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    ahorro_mensual_adicional: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    interes_geografico: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # peru, global, ambos
+    tiene_deudas: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
     cuestionario_detallado: Mapped[bool] = mapped_column(Boolean, default=False)
 
     usuario = relationship("User", back_populates="perfil")
