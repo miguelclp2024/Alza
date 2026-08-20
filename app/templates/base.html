@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Alza{% endblock %}</title>
+<meta name="description" content="{% block description %}Alza: orientación financiera gratuita. Responde un cuestionario y descubre en qué invertir tus ahorros, con datos reales de mercado.{% endblock %}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{% block og_title %}Alza — Orientación financiera{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Descubre en qué te conviene invertir. Cuestionario gratuito, alternativas reales de inversión, sin registro.{% endblock %}">
+<meta property="og:image" content="{{ request.url.scheme }}://{{ request.url.netloc }}/static/img/alza_logo.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/static/img/alza_logo.png">
 <link rel="stylesheet" href="/static/css/styles.css">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -27,18 +33,18 @@
 <body class="bg-navy-dark text-slate-100 font-sans min-h-screen flex flex-col">
 
 <nav class="border-b border-white/10 bg-navy">
-  <div class="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between">
-    <a href="/" class="flex items-center">
-      <img src="/static/img/alza_logo.png" alt="Alza" class="h-24 w-auto mix-blend-lighten">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+    <a href="/" class="flex items-center shrink-0">
+      <img src="/static/img/alza_logo.png" alt="Alza" class="h-14 sm:h-20 md:h-24 w-auto mix-blend-lighten">
     </a>
-    <div class="flex items-center gap-6 text-sm font-medium">
+    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-medium flex-wrap justify-end">
       {% if user and user.perfil and user.perfil.confirmado %}
         <a href="/dashboard" class="hover:text-gold transition">Dashboard</a>
         <a href="/invertir" class="hover:text-gold transition">Invertir</a>
         <a href="/metas" class="hover:text-gold transition">Metas</a>
         <a href="/reiniciar" class="text-slate-400 hover:text-white transition">Reiniciar perfil</a>
       {% else %}
-        <span class="text-slate-500 text-xs">Sin registro, solo respondes y listo</span>
+        <span class="text-slate-500 text-xs hidden sm:inline">Sin registro, solo respondes y listo</span>
       {% endif %}
     </div>
   </div>
